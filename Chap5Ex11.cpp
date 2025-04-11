@@ -3,8 +3,8 @@
 // Date: April 2025
 // Requirements:
 // Display two random numbers to be added -> Pause and wait for student to solve the problem -> Display the correct solution. 
-// Input should be validated, at least three modules, repeatable
-
+// Input should be validated, at least three modules, repeatable'
+// Now, take input, react based on whether or not correct
 #include <iostream>
 #include <random>
 
@@ -19,42 +19,42 @@ void generateProblem(int& num1, int& num2) {
     num2 = randomInt(rd);
 }
 
-// Fixes error where cin.get() doesnt work
-void Fix() {
-    char ch;
-    
-    while (cin.get(ch) && ch != '\n') {}
-    // does nothing, fixes everything. Don't understand logic
+// Gets the student's answer and validates input
+int getStudentAnswer() {
+    int answer;
+    while (true) {
+        cout << "Enter your answer: ";
+        if (cin >> answer) {
+            return answer;
+        }
+        else {
+            cout << "Invalid input. Please enter a number.\n";
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
+    }
 }
 
-// Displays the problem and waits for the user to press Enter
-void showProblemAndWait(int num1, int num2) {
-    cout << "\nSolve this problem:\n";
-    cout << "  " << num1 << endl;
-    cout << "+ " << num2 << endl;
-    cout << "\nPress Enter when you're ready to see the answer...";
-    
-    cin.get();    // Wait for Enter
+// Checks student's answer and provides feedback
+void checkAnswer(int num1, int num2, int studentAnswer) {
+    int correctAnswer = num1 + num2;
+
+    if (studentAnswer == correctAnswer) {
+        cout << "Congratulations! That's correct!\n";
+    }
+    else {
+        cout << "Oops! The correct answer was: " << correctAnswer << endl;
+    }
 }
 
-// Displays the correct answer to the problem
-void displayAnswer(int num1, int num2) {
-    cout << "\nThe correct answer is:\n";
-    cout << "  " << num1 << endl;
-    cout << "+ " << num2 << endl;
-    cout << "-----" << endl;
-    cout << "  " << (num1 + num2) << endl;
-}
-
-// Validates user input for continuation (y/n)
+// Asks user if they want to try another problem
 bool askToContinue() {
     char choice;
     while (true) {
-        cout << "\nWould you like to try another problem? (y/n): ";
+        cout << "Would you like to try another problem? (y/n): ";
         cin >> choice;
-
-        Fix();
         choice = tolower(choice);
+        cin.ignore(10000, '\n');
 
         if (choice == 'y') return true;
         else if (choice == 'n') return false;
@@ -62,7 +62,7 @@ bool askToContinue() {
     }
 }
 
-// Main function
+// Main program
 int main() {
     cout << "Welcome to the Math Tutor!\n";
 
@@ -70,8 +70,17 @@ int main() {
     while (keepGoing) {
         int num1, num2;
         generateProblem(num1, num2);
-        showProblemAndWait(num1, num2);
-        displayAnswer(num1, num2);
+
+        // Display problem
+        cout << "\nSolve this problem:\n";
+        cout << "  " << num1 << endl;
+        cout << "+ " << num2 << endl;
+        cout << "------" << endl;
+
+        // Get and check answer
+        int studentAnswer = getStudentAnswer();
+        checkAnswer(num1, num2, studentAnswer);
+
         keepGoing = askToContinue();
     }
 
